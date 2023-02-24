@@ -5,7 +5,11 @@ const galleryRef = document.querySelector(".gallery");
 const imageMarkup = createImgCardsMarkup(galleryItems);
 
 galleryRef.insertAdjacentHTML("beforeend", imageMarkup);
-galleryRef.addEventListener("click", onGalleryContainerClick);
+galleryRef.addEventListener("click", myFunction);
+
+function myFunction(event) {
+  onGalleryContainerClick(event);
+}
 
 function createImgCardsMarkup(galleryItems) {
   return galleryItems
@@ -31,17 +35,24 @@ function onGalleryContainerClick(event) {
     return;
   }
 
-  const instance = basicLightbox.create(`
+  const instance = basicLightbox.create(
+    `
     <img src="${event.target.dataset.source}" width="800" height="600">
-`);
+`,
+    {
+      onShow: (instance) => {
+        window.addEventListener("keydown", onEscKeyPress);
+      },
+      onClose: (instance) => {
+        window.removeEventListener("keydown", onEscKeyPress);
+      },
+    }
+  );
 
   instance.show(() => console.log("lightbox now visible"));
 
-  galleryRef.addEventListener("keydown", (event) => {
-    if (event.code !== "Escape") {
-      return;
-    }
-
-    instance.close(() => console.log("lightbox not visible anymore"));
-  });
+  function onEscKeyPress(event) {
+    if (event.code !== "Escape") return;
+    instance.close();
+  }
 }

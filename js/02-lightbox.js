@@ -5,24 +5,20 @@ const galleryRef = document.querySelector(".gallery");
 const imageMarkup = createImgCardsMarkup(galleryItems);
 
 galleryRef.insertAdjacentHTML("beforeend", imageMarkup);
-galleryRef.addEventListener("click", onGalleryContainerClick);
 
 function createImgCardsMarkup(galleryItems) {
   return galleryItems
     .map(({ preview, original, description }) => {
-      return `<a class="gallery__item" href="${original}">
+      return `<li><a class="gallery__item" href="${original}">
       <img class="gallery__image" src="${preview}" alt="${description}" />
-      </a>`;
+      </a></li>`;
     })
     .join("");
 }
 
-function onGalleryContainerClick(event) {
-  event.preventDefault();
+let gallery = new SimpleLightbox(".gallery a", {
+  captionsData: "alt",
+  captionDelay: 250,
+});
 
-  let gallery = new SimpleLightbox(".gallery a", {
-    captionsData: "alt",
-    captionDelay: 250,
-  });
-  gallery.on("show.simplelightbox", function () {});
-}
+gallery.on("show.simplelightbox", function () {});
